@@ -10,6 +10,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import { merge } from 'webpack-merge';
 import TerserPlugin from 'terser-webpack-plugin';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 import baseConfig from './webpack.config.base';
 import webpackPaths from './webpack.paths';
 import checkNodeEnv from '../scripts/check-node-env';
@@ -118,6 +119,26 @@ const configuration: webpack.Configuration = {
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
       analyzerPort: 8889,
+    }),
+
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(webpackPaths.srcRendererPath, 'bongo.cat'),
+          to: 'bongo.cat/',
+          globOptions: {
+            ignore: [
+              '**/index.html',
+              '**/.git/**',
+              '**/README.md',
+              '**/LICENSE',
+              '**/CODEOWNERS',
+              '**/CNAME',
+              '**/robots.txt',
+            ],
+          },
+        },
+      ],
     }),
 
     new HtmlWebpackPlugin({
